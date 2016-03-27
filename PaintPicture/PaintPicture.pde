@@ -7,10 +7,12 @@ color[] c;
 float comparator;
 int minIndex;
 int numColours;
+String imageName;
 void setup(){
-  size(504,332);
-  img = loadImage("camel1.jpg");
-  numColours = 9;
+  size(4272,3204);
+  imageName = "trump";
+  img = loadImage(imageName + ".jpg");
+  numColours = 10;
   comparator = 2293939;
   minIndex = 2;
   r = new float[numColours];
@@ -54,6 +56,9 @@ void setup(){
   g[8] = 73;
   b[8] = 164;
   
+  r[9] = 0;//185;
+  g[9] = 0;//122;
+  b[9] = 0;//87;
 }
 void draw(){
  image(img,0,0);
@@ -91,7 +96,7 @@ void draw(){
       for( int i = 0; i < numColours; i++){
         ratio[i] = abs(red(img.pixels[loc]) - r[i]) + abs(green(img.pixels[loc]) - g[i]) + abs(blue(img.pixels[loc]) - b[i]);
       }
-      comparator = min(min(ratio[0],ratio[1],ratio[2]),ratio[3],min(ratio[4],ratio[5],min(ratio[6],ratio[7],ratio[8])));
+      comparator = min(min(ratio[0],ratio[1],ratio[2]),ratio[3],min(ratio[4],ratio[5],min(ratio[6],ratio[7],min(ratio[8],ratio[9]))));
       if(comparator == ratio[0]){
         minIndex = 0;
       }
@@ -119,9 +124,36 @@ void draw(){
       else if(comparator == ratio[8]){
         minIndex = 8;
       }
+      else if(comparator == ratio[9]){
+        minIndex = 9;
+      }
       pixels[loc] = c[minIndex];
     }
   }
-  updatePixels();
   
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width - 5; x++) {
+      int loc = x + y*width;
+      int loc2 = x + 5 + y*width;
+      if(pixels[loc] == pixels[loc2]){
+        for(int i = 0; i < 5; i++){
+          pixels[loc + i] = pixels[loc];
+        }
+      }
+    }
+  }
+  for (int y = 0; y < height - 5; y++) {
+    for (int x = 0; x < width; x++) {
+      int loc = x + y*width;
+      int loc2 = x + (y + 5)*width;
+      if(pixels[loc] == pixels[loc2]){
+        for(int i = 0; i < 5; i++){
+          pixels[loc + i*width] = pixels[loc];
+        }
+      }
+    }
+  }
+  
+  updatePixels();
+  save(imageName + "butInPaint.jpg");
 }
